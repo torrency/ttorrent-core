@@ -7,7 +7,7 @@
   </parent>
   
   <artifactId>ttorrent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
   <name>Java BitTorrent library core</name>
   <url>https://github.com/Rugal/commitlinter-maven-plugin</url>
@@ -30,7 +30,7 @@
     <connection>scm:git:git://github.com/Rugal/ttorrent-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Rugal/ttorrent-core.git</developerConnection>
     <url>https://github.com/Rugal/ttorrent-core</url>
-    <tag>master</tag>
+    <tag>v1.0.0</tag>
   </scm>
 
   <licenses>
