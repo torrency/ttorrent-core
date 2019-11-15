@@ -20,8 +20,6 @@ jobs:
           when: always
       - store_test_results:
           path: ~/junit
-      - store_artifacts:
-          path: target/site
       - save_cache:
           key: v1-ttorrent-core-{{ checksum "pom.xml" }}
           paths:
