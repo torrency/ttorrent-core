@@ -35,6 +35,7 @@ import com.turn.ttorrent.common.protocol.TrackerMessage.MessageValidationExcepti
 import com.turn.ttorrent.common.protocol.http.HttpAnnounceRequestMessage;
 import com.turn.ttorrent.common.protocol.http.HttpAnnounceResponseMessage;
 import com.turn.ttorrent.common.protocol.http.HttpTrackerErrorMessage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.simpleframework.http.Request;
@@ -64,6 +65,11 @@ import org.simpleframework.http.core.Container;
 public class TrackerService implements Container {
 
   /**
+   * Default server name and version announced by the tracker.
+   */
+  public static final String DEFAULT_VERSION_STRING = "BitTorrent Tracker (ttorrent)";
+
+  /**
    * The list of announce request URL fields that need to be interpreted as numeric and thus
    * converted as such in the request message parsing.
    */
@@ -71,18 +77,18 @@ public class TrackerService implements Container {
     "port", "uploaded", "downloaded", "left", "compact", "no_peer_id", "numwant"
   };
 
-  private final String version;
+  protected final String version;
 
-  private final ConcurrentMap<String, TrackedTorrent> torrents;
+  @Getter
+  protected ConcurrentMap<String, TrackedTorrent> torrents;
 
   /**
    * Create a new TrackerService serving the given torrents.
    *
    * @param torrents The torrents this TrackerService should serve requests for.
    */
-  TrackerService(final String version,
-                 final ConcurrentMap<String, TrackedTorrent> torrents) {
-    this.version = version;
+  TrackerService(final ConcurrentMap<String, TrackedTorrent> torrents) {
+    this.version = DEFAULT_VERSION_STRING;
     this.torrents = torrents;
   }
 
@@ -130,10 +136,12 @@ public class TrackerService implements Container {
    * @param request  The incoming announce request.
    * @param response The response object.
    * @param body     The validated response body output stream.
+   *
+   * @throws IOException Unable to parse query
    */
-  private void process(final Request request,
-                       final Response response,
-                       final OutputStream body) throws IOException {
+  protected void process(final Request request,
+                         final Response response,
+                         final OutputStream body) throws IOException {
     // Prepare the response headers.
     response.set("Content-Type", "text/plain");
     response.set("Server", this.version);

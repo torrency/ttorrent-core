@@ -62,7 +62,7 @@ public class Tracker {
    */
   public static final String DEFAULT_VERSION_STRING = "BitTorrent Tracker (ttorrent)";
 
-  private final Connection connection;
+  private Connection connection;
 
   private final InetSocketAddress address;
 
@@ -83,9 +83,10 @@ public class Tracker {
    * @param address The address to bind to.
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
+   *
    */
   public Tracker(final InetAddress address) throws IOException {
-    this(new InetSocketAddress(address, DEFAULT_TRACKER_PORT), DEFAULT_VERSION_STRING);
+    this(new InetSocketAddress(address, DEFAULT_TRACKER_PORT));
   }
 
   /**
@@ -94,23 +95,43 @@ public class Tracker {
    * @param address The address to bind to.
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
+   *
    */
   public Tracker(final InetSocketAddress address) throws IOException {
-    this(address, DEFAULT_VERSION_STRING);
+    this(address, new ConcurrentHashMap<>());
   }
 
   /**
    * Create a new BitTorrent tracker listening at the given address.
    *
-   * @param address The address to bind to.
-   * @param version A version string served in the HTTP headers
+   * @param address  The address to bind to.
+   * @param torrents
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
+   *
    */
-  public Tracker(final InetSocketAddress address, final String version) throws IOException {
+  public Tracker(final InetSocketAddress address,
+                 final ConcurrentMap<String, TrackedTorrent> torrents) throws IOException {
     this.address = address;
-    this.torrents = new ConcurrentHashMap<>();
-    this.connection = new SocketConnection(new TrackerService(version, this.torrents));
+    this.torrents = torrents;
+    this.connection = new SocketConnection(new TrackerService(this.torrents));
+  }
+
+  /**
+   * Create a new BitTorrent tracker listening at the given address.<BR>
+   * Able to use customize TrackerService.
+   *
+   * @param address The address to bind to.
+   * @param service
+   *
+   * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
+   *
+   */
+  public Tracker(final InetSocketAddress address,
+                 final TrackerService service) throws IOException {
+    this.address = address;
+    this.torrents = service.getTorrents();
+    this.connection = new SocketConnection(service);
   }
 
   /**
@@ -136,7 +157,8 @@ public class Tracker {
   }
 
   /**
-   * Start the tracker thread.
+   * Start the tracker thread.<BR>
+   * By specifying the tracker service, user can customize tracker handler.
    */
   public void start() {
     if (this.tracker == null || !this.tracker.isAlive()) {
