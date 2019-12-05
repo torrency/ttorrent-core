@@ -87,7 +87,7 @@ public class TrackerService implements Container {
    *
    * @param torrents The torrents this TrackerService should serve requests for.
    */
-  TrackerService(final ConcurrentMap<String, TrackedTorrent> torrents) {
+  public TrackerService(final ConcurrentMap<String, TrackedTorrent> torrents) {
     this.version = DEFAULT_VERSION_STRING;
     this.torrents = torrents;
   }
