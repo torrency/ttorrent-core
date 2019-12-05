@@ -135,6 +135,23 @@ public class Tracker {
   }
 
   /**
+   * Create a new BitTorrent tracker listening at the given address.<BR>
+   * Able to use customize TrackerService.
+   *
+   * @param address The address to bind to.
+   * @param service
+   *
+   * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
+   *
+   */
+  public Tracker(final InetAddress address,
+                 final TrackerService service) throws IOException {
+    this.address = new InetSocketAddress(address, DEFAULT_TRACKER_PORT);
+    this.torrents = service.getTorrents();
+    this.connection = new SocketConnection(service);
+  }
+
+  /**
    * Returns the full announce URL served by this tracker.
    *
    * <p>
