@@ -124,6 +124,17 @@ public class TrackerService implements Container {
     }
   }
 
+  protected void beforeUpdate(final TrackedTorrent torrent,
+                              final HttpAnnounceRequestMessage announceRequest) {
+
+  }
+
+  protected void afterUpdate(final TrackedTorrent torrent,
+                             final TrackedPeer peer,
+                             final HttpAnnounceRequestMessage announceRequest) {
+
+  }
+
   /**
    * Process the announce request.
    *
@@ -139,18 +150,16 @@ public class TrackerService implements Container {
    *
    * @throws IOException Unable to parse query
    */
-  protected void process(final Request request,
-                         final Response response,
-                         final OutputStream body) throws IOException {
+  void process(final Request request, final Response response,
+               final OutputStream body) throws IOException {
     // Prepare the response headers.
     response.set("Content-Type", "text/plain");
     response.set("Server", this.version);
     response.setDate("Date", System.currentTimeMillis());
-
     /*
-     * Parse the query parameters into an announce request message.
-     * We need to rely on our own query parsing function because SimpleHTTP's Query map will contain
-     * UTF-8 decoded parameters, which doesn't work well for the byte-encoded strings we expect.
+     * Parse the query parameters into an announce request message. We need to rely on our own query
+     * parsing function because SimpleHTTP's Query map will contain UTF-8 decoded parameters, which
+     * doesn't work well for the byte-encoded strings we expect.
      */
     final HttpAnnounceRequestMessage announceRequest;
     try {
@@ -188,10 +197,10 @@ public class TrackerService implements Container {
       this.serveError(response, body, Status.BAD_REQUEST, ErrorMessage.FailureReason.INVALID_EVENT);
       return;
     }
-
     // Update the torrent according to the announce event
     final TrackedPeer peer;
     try {
+      this.beforeUpdate(torrent, announceRequest);
       peer = torrent.update(event,
                             ByteBuffer.wrap(announceRequest.getPeerId()),
                             announceRequest.getHexPeerId(),
@@ -200,15 +209,14 @@ public class TrackerService implements Container {
                             announceRequest.getUploaded(),
                             announceRequest.getDownloaded(),
                             announceRequest.getLeft());
+      this.afterUpdate(torrent, peer, announceRequest);
     } catch (final IllegalArgumentException iae) {
       this.serveError(response, body, Status.BAD_REQUEST, ErrorMessage.FailureReason.INVALID_EVENT);
       return;
     }
-
     // Craft and output the answer
-    final HttpAnnounceResponseMessage announceResponse;
     try {
-      announceResponse = HttpAnnounceResponseMessage.craft(
+      final HttpAnnounceResponseMessage announceResponse = HttpAnnounceResponseMessage.craft(
               torrent.getAnnounceInterval(),
               TrackedTorrent.MIN_ANNOUNCE_INTERVAL_SECONDS,
               this.version,
