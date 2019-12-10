@@ -64,6 +64,24 @@ public class TrackedPeer extends Peer {
    */
   private long left;
 
+  /**
+   * The upload amount of last time.<BR>
+   * Set to 0 if it is the first time or no difference.
+   */
+  private long lastUploaded;
+
+  /**
+   * The download amount of last time.<BR>
+   * Set to 0 if it is the first time or no difference.
+   */
+  private long lastDownloaded;
+
+  /**
+   * The left amount of last time.<BR>
+   * Set to 0 if it is the first time or no difference.
+   */
+  private long lastLeft;
+
   private final Torrent torrent;
 
   /**
@@ -116,9 +134,9 @@ public class TrackedPeer extends Peer {
     this.state = PeerState.UNKNOWN;
     this.lastAnnounce = null;
 
-    this.uploaded = 0;
-    this.downloaded = 0;
-    this.left = 0;
+    this.uploaded = this.lastUploaded = 0;
+    this.downloaded = this.lastDownloaded = 0;
+    this.left = this.lastLeft = 0;
   }
 
   /**
@@ -143,14 +161,16 @@ public class TrackedPeer extends Peer {
     }
 
     if (!state.equals(this.state)) {
-      LOG.info("Peer {} {} download of {}.", new Object[]{
-        this,
-        state.name().toLowerCase(),
-        this.torrent,});
+      LOG.info("Peer {} {} download of {}.", this, state.name().toLowerCase(), this.torrent);
     }
 
     this.state = state;
     this.lastAnnounce = new Date();
+    // Update announce amount of last time
+    this.lastUploaded = this.uploaded;
+    this.lastDownloaded = this.downloaded;
+    this.lastLeft = this.left;
+    // Update announce amount of current time
     this.uploaded = uploaded;
     this.downloaded = downloaded;
     this.left = left;
@@ -193,5 +213,32 @@ public class TrackedPeer extends Peer {
     peer.put("ip", new BeValue(this.getIp(), Torrent.BYTE_ENCODING));
     peer.put("port", new BeValue(this.getPort()));
     return new BeValue(peer);
+  }
+
+  /**
+   * Get the upload different of last announce.
+   *
+   * @return upload different of last announce
+   */
+  public long getUploadDifference() {
+    return this.uploaded - this.lastUploaded;
+  }
+
+  /**
+   * Get the download different of last announce.
+   *
+   * @return download different of last announce
+   */
+  public long getDownloadDifference() {
+    return this.downloaded - this.lastDownloaded;
+  }
+
+  /**
+   * Get the left different of last announce.
+   *
+   * @return left different of last announce
+   */
+  public long getLeftDifference() {
+    return this.left - this.lastLeft;
   }
 }

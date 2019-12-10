@@ -105,7 +105,7 @@ public class Tracker {
    * Create a new BitTorrent tracker listening at the given address.
    *
    * @param address  The address to bind to.
-   * @param torrents
+   * @param torrents The torrent list
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
    *
@@ -122,7 +122,7 @@ public class Tracker {
    * Able to use customize TrackerService.
    *
    * @param address The address to bind to.
-   * @param service
+   * @param service Customize service
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
    *
@@ -139,7 +139,7 @@ public class Tracker {
    * Able to use customize TrackerService.
    *
    * @param address The address to bind to.
-   * @param service
+   * @param service Customize service
    *
    * @throws IOException Throws an <em>IOException</em> if the tracker cannot be initialized.
    *

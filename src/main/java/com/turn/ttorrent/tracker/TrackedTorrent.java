@@ -291,8 +291,7 @@ public class TrackedTorrent extends Torrent {
   /**
    * Load a tracked torrent from the given torrent file.
    *
-   * @param torrent The abstract {@link File} object representing the
-   * {@code .torrent} file to load.
+   * @param torrent The abstract {@link File} object representing the {@code .torrent} file to load.
    *
    * @return loaded torrent
    *
