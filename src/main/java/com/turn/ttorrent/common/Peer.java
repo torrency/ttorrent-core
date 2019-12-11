@@ -42,6 +42,9 @@ public class Peer {
    */
   private final String hostId;
 
+  /**
+   * This get randomly generated upon launching of torrent client.
+   */
   private ByteBuffer peerId;
 
   /**

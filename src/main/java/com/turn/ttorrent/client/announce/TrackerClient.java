@@ -135,8 +135,8 @@ public abstract class TrackerClient {
     }
 
     if (!(message instanceof AnnounceResponseMessage)) {
-      throw new AnnounceException("Unexpected tracker message type "
-                                  + message.getType().name() + "!");
+      throw new AnnounceException(String.format("Unexpected tracker message type %s!",
+                                                message.getType().name()));
     }
 
     if (inhibitEvents) {

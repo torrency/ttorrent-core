@@ -121,8 +121,7 @@ public class ConnectionHandler implements Runnable {
     this.torrent = torrent;
     this.id = id;
 
-    // Bind to the first available port in the range
-    // [PORT_RANGE_START; PORT_RANGE_END].
+    // Bind to the first available port in the range [PORT_RANGE_START; PORT_RANGE_END].
     for (int port = ConnectionHandler.PORT_RANGE_START;
          port <= ConnectionHandler.PORT_RANGE_END;
          port++) {

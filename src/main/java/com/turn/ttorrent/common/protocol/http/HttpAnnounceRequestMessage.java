@@ -146,13 +146,11 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     final StringBuilder url = new StringBuilder(base);
     url.append(base.contains("?") ? "&" : "?")
             .append("info_hash=")
-            .append(URLEncoder.encode(
-                    new String(this.getInfoHash(), Torrent.BYTE_ENCODING),
-                    Torrent.BYTE_ENCODING))
+            .append(URLEncoder.encode(new String(this.getInfoHash(), Torrent.BYTE_ENCODING),
+                                      Torrent.BYTE_ENCODING))
             .append("&peer_id=")
-            .append(URLEncoder.encode(
-                    new String(this.getPeerId(), Torrent.BYTE_ENCODING),
-                    Torrent.BYTE_ENCODING))
+            .append(URLEncoder.encode(new String(this.getPeerId(), Torrent.BYTE_ENCODING),
+                                      Torrent.BYTE_ENCODING))
             .append("&port=").append(this.getPort())
             .append("&uploaded=").append(this.getUploaded())
             .append("&downloaded=").append(this.getDownloaded())
@@ -184,11 +182,9 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     if (!params.containsKey("info_hash")) {
       throw new MessageValidationException(ErrorMessage.FailureReason.MISSING_HASH.getMessage());
     }
-
     if (!params.containsKey("peer_id")) {
       throw new MessageValidationException(ErrorMessage.FailureReason.MISSING_PEER_ID.getMessage());
     }
-
     if (!params.containsKey("port")) {
       throw new MessageValidationException(ErrorMessage.FailureReason.MISSING_PORT.getMessage());
     }
@@ -198,8 +194,7 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
       final byte[] peerId = params.get("peer_id").getBytes();
       final int port = params.get("port").getInt();
 
-      // Default 'uploaded' and 'downloaded' to 0 if the client does
-      // not provide it (although it should, according to the spec).
+      // Default 'uploaded' and 'downloaded' to 0 if the client does not provide it
       long uploaded = 0;
       if (params.containsKey("uploaded")) {
         uploaded = params.get("uploaded").getLong();
@@ -210,8 +205,7 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
         downloaded = params.get("downloaded").getLong();
       }
 
-      // Default 'left' to -1 to avoid peers entering the COMPLETED
-      // state when they don't provide the 'left' parameter.
+      // Default 'left' to -1 to avoid peers entering the COMPLETED state when not provided
       long left = -1;
       if (params.containsKey("left")) {
         left = params.get("left").getLong();
@@ -252,18 +246,18 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     }
   }
 
-  public static HttpAnnounceRequestMessage craft(final byte[] infoHash,
-                                                 final byte[] peerId,
-                                                 final int port,
-                                                 final long uploaded,
-                                                 final long downloaded,
-                                                 final long left,
-                                                 final boolean compact,
-                                                 final boolean noPeerId,
-                                                 final RequestEvent event,
-                                                 final String ip,
-                                                 final int numWant)
-          throws IOException, MessageValidationException, UnsupportedEncodingException {
+  private static Map<String, BeValue> assemble(final byte[] infoHash,
+                                               final byte[] peerId,
+                                               final int port,
+                                               final long uploaded,
+                                               final long downloaded,
+                                               final long left,
+                                               final boolean compact,
+                                               final boolean noPeerId,
+                                               final RequestEvent event,
+                                               final String ip,
+                                               final int numWant)
+          throws UnsupportedEncodingException {
     final Map<String, BeValue> params = new HashMap<>();
     params.put("info_hash", new BeValue(infoHash));
     params.put("peer_id", new BeValue(peerId));
@@ -285,10 +279,27 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     if (numWant != AnnounceRequestMessage.DEFAULT_NUM_WANT) {
       params.put("numwant", new BeValue(numWant));
     }
+    return params;
+  }
 
-    return new HttpAnnounceRequestMessage(
-            BeEncoder.bencode(params),
-            infoHash, new Peer(ip, port, ByteBuffer.wrap(peerId)),
-            uploaded, downloaded, left, compact, noPeerId, event, numWant);
+  public static HttpAnnounceRequestMessage craft(final byte[] infoHash,
+                                                 final byte[] peerId,
+                                                 final int port,
+                                                 final long uploaded,
+                                                 final long downloaded,
+                                                 final long left,
+                                                 final boolean compact,
+                                                 final boolean noPeerId,
+                                                 final RequestEvent event,
+                                                 final String ip,
+                                                 final int numWant)
+          throws IOException, MessageValidationException, UnsupportedEncodingException {
+    final Map<String, BeValue> params = assemble(infoHash, peerId, port,
+                                                 uploaded, downloaded, left,
+                                                 compact, noPeerId, event, ip, numWant);
+    return new HttpAnnounceRequestMessage(BeEncoder.bencode(params),
+                                          infoHash, new Peer(ip, port, ByteBuffer.wrap(peerId)),
+                                          uploaded, downloaded, left,
+                                          compact, noPeerId, event, numWant);
   }
 }

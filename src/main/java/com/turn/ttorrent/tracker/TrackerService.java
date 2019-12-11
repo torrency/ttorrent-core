@@ -25,6 +25,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import com.turn.ttorrent.bcodec.BeEncoder;
@@ -73,9 +74,8 @@ public class TrackerService implements Container {
    * The list of announce request URL fields that need to be interpreted as numeric and thus
    * converted as such in the request message parsing.
    */
-  private static final String[] NUMERIC_REQUEST_FIELDS = new String[]{
-    "port", "uploaded", "downloaded", "left", "compact", "no_peer_id", "numwant"
-  };
+  private static final Set<String> NUMERIC_REQUEST_FIELDS
+          = Set.of("port", "uploaded", "downloaded", "left", "compact", "no_peer_id", "numwant");
 
   protected final String version;
 
@@ -279,18 +279,15 @@ public class TrackerService implements Container {
                            String value) {
     try {
       value = URLDecoder.decode(value, TrackedTorrent.BYTE_ENCODING);
-
-      for (String f : NUMERIC_REQUEST_FIELDS) {
-        if (f.equals(key)) {
-          params.put(key, new BeValue(Long.valueOf(value)));
-          return;
-        }
+      if (NUMERIC_REQUEST_FIELDS.contains(key)) {
+        params.put(key, new BeValue(Long.valueOf(value)));
+        return;
       }
 
       params.put(key, new BeValue(value, TrackedTorrent.BYTE_ENCODING));
     } catch (final UnsupportedEncodingException uee) {
       // Ignore, act like parameter was not there
-      LOG.error("", uee);
+      LOG.error("Specified encoding not supported", uee);
     }
   }
 

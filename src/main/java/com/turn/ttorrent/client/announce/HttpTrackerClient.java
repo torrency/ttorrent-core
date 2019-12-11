@@ -88,30 +88,35 @@ public class HttpTrackerClient extends TrackerClient {
       final HttpAnnounceRequestMessage request = this.buildAnnounceRequest(event);
       target = request.buildAnnounceUrl(this.tracker.toURL());
     } catch (final MalformedURLException mue) {
-      throw new AnnounceException("Invalid announce URL ("
-                                  + mue.getMessage() + ")", mue);
+      throw new AnnounceException(String.format("Invalid announce URL (%s)", mue.getMessage()),
+                                  mue);
     } catch (final MessageValidationException mve) {
-      throw new AnnounceException("Announce request creation violated "
-                                  + "expected protocol (" + mve.getMessage() + ")", mve);
+
+      throw new AnnounceException(String
+              .format("Announce request creation violated expected protocol (%s)",
+                      mve.getMessage()),
+                                  mve);
     } catch (final IOException ioe) {
-      throw new AnnounceException("Error building announce request ("
-                                  + ioe.getMessage() + ")", ioe);
+
+      throw new AnnounceException(String.format("Error building announce request (%s)",
+                                                ioe.getMessage()),
+                                  ioe);
     }
 
-    HttpURLConnection conn = null;
+    HttpURLConnection connection = null;
     InputStream in = null;
     try {
-      conn = (HttpURLConnection) target.openConnection();
-      in = conn.getInputStream();
+      LOG.info("Announce with [{}]", target);
+      connection = (HttpURLConnection) target.openConnection();
+      in = connection.getInputStream();
     } catch (final IOException ioe) {
-      if (conn != null) {
-        in = conn.getErrorStream();
+      if (connection != null) {
+        in = connection.getErrorStream();
       }
     }
 
     // At this point if the input stream is null it means we have neither a
-    // response body nor an error stream from the server. No point in going
-    // any further.
+    // response body nor an error stream from the server. No point in going any further.
     if (in == null) {
       throw new AnnounceException("No response or unreachable tracker!");
     }
@@ -127,8 +132,9 @@ public class HttpTrackerClient extends TrackerClient {
     } catch (final IOException ioe) {
       throw new AnnounceException("Error reading tracker response!", ioe);
     } catch (final MessageValidationException mve) {
-      throw new AnnounceException("Tracker message violates expected "
-                                  + "protocol (" + mve.getMessage() + ")", mve);
+      throw new AnnounceException(String.format("Tracker message violates expected protocol (%s)",
+                                                mve.getMessage()),
+                                  mve);
     } finally {
       // Make sure we close everything down at the end to avoid resource
       // leaks.
@@ -139,7 +145,7 @@ public class HttpTrackerClient extends TrackerClient {
       }
 
       // This means trying to close the error stream as well.
-      final InputStream err = conn.getErrorStream();
+      final InputStream err = connection.getErrorStream();
       if (err != null) {
         try {
           err.close();

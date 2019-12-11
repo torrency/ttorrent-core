@@ -290,7 +290,8 @@ public class Announce implements Runnable {
 
     if ("http".equals(scheme) || "https".equals(scheme)) {
       return new HttpTrackerClient(torrent, peer, tracker);
-    } else if ("udp".equals(scheme)) {
+    }
+    if ("udp".equals(scheme)) {
       return new UdpTrackerClient(torrent, peer, tracker);
     }
 

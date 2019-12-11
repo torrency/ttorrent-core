@@ -135,12 +135,9 @@ public class TrackedTorrent extends Torrent {
    * @return number of seeders
    */
   public int seeders() {
-    int count = 0;
-    count = this.peers.values().stream()
+    return (int) this.peers.values().stream()
             .filter(TrackedPeer::isCompleted)
-            .map((_item) -> 1)
-            .reduce(count, Integer::sum);
-    return count;
+            .count();
   }
 
   /**
@@ -149,12 +146,9 @@ public class TrackedTorrent extends Torrent {
    * @return number of leechers
    */
   public int leechers() {
-    int count = 0;
-    count = this.peers.values().stream()
+    return (int) this.peers.values().stream()
             .filter((peer) -> !peer.isCompleted())
-            .map((_item) -> 1)
-            .reduce(count, Integer::sum);
-    return count;
+            .count();
   }
 
   /**

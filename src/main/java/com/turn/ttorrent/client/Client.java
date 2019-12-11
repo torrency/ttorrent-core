@@ -153,8 +153,7 @@ public class Client extends Observable implements Runnable,
                          this.service.getSocketAddress().getPort(),
                          ByteBuffer.wrap(id.getBytes(Torrent.BYTE_ENCODING)));
 
-    // Initialize the announce request thread, and register ourselves to it
-    // as well.
+    // Initialize the announce request thread, and register ourselves to it as well.
     this.announce = new Announce(this.torrent, this.self);
     this.announce.register(this);
 
@@ -250,8 +249,7 @@ public class Client extends Observable implements Runnable,
 
     if (this.thread == null || !this.thread.isAlive()) {
       this.thread = new Thread(this);
-      this.thread.setName("bt-client("
-                          + this.self.getShortHexPeerId() + ")");
+      this.thread.setName(String.format("bt-client(%s)", this.self.getShortHexPeerId()));
       this.thread.start();
     }
   }
@@ -381,7 +379,7 @@ public class Client extends Observable implements Runnable,
       }
     }
 
-    LOG.debug("Stopping BitTorrent client connection service " + "and announce threads...");
+    LOG.debug("Stopping BitTorrent client connection service and announce threads...");
 
     this.service.stop();
     try {
