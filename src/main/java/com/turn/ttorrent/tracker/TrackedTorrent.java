@@ -73,7 +73,7 @@ public class TrackedTorrent extends Torrent {
   private int announceInterval;
 
   /**
-   * Peers currently exchanging on this torrent.
+   * Peers currently exchanging on this torrent. &lt;HexPeerId, TrackedPeer&gt;
    */
   private ConcurrentMap<String, TrackedPeer> peers;
 

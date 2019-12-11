@@ -75,7 +75,9 @@ public class TrackerService implements Container {
    * converted as such in the request message parsing.
    */
   private static final Set<String> NUMERIC_REQUEST_FIELDS
-          = Set.of("port", "uploaded", "downloaded", "left", "compact", "no_peer_id", "numwant");
+          = Set.of("uid", "port",
+                   "uploaded", "downloaded", "left",
+                   "compact", "no_peer_id", "numwant");
 
   protected final String version;
 
@@ -125,13 +127,13 @@ public class TrackerService implements Container {
   }
 
   protected void beforeUpdate(final TrackedTorrent torrent,
-                              final HttpAnnounceRequestMessage announceRequest) {
+                              final Map<String, BeValue> parameters) {
 
   }
 
   protected void afterUpdate(final TrackedTorrent torrent,
                              final TrackedPeer peer,
-                             final HttpAnnounceRequestMessage announceRequest) {
+                             final Map<String, BeValue> parameters) {
 
   }
 
@@ -162,8 +164,10 @@ public class TrackerService implements Container {
      * doesn't work well for the byte-encoded strings we expect.
      */
     final HttpAnnounceRequestMessage announceRequest;
+    final Map<String, BeValue> parameters;
     try {
-      announceRequest = this.parseQuery(request);
+      parameters = this.parseQuery(request);
+      announceRequest = HttpAnnounceRequestMessage.parse(BeEncoder.bencode(parameters));
     } catch (final MessageValidationException mve) {
       this.serveError(response, body, Status.BAD_REQUEST, mve.getMessage());
       return;
@@ -200,7 +204,7 @@ public class TrackerService implements Container {
     // Update the torrent according to the announce event
     final TrackedPeer peer;
     try {
-      this.beforeUpdate(torrent, announceRequest);
+      this.beforeUpdate(torrent, parameters);
       peer = torrent.update(event,
                             ByteBuffer.wrap(announceRequest.getPeerId()),
                             announceRequest.getHexPeerId(),
@@ -209,7 +213,7 @@ public class TrackerService implements Container {
                             announceRequest.getUploaded(),
                             announceRequest.getDownloaded(),
                             announceRequest.getLeft());
-      this.afterUpdate(torrent, peer, announceRequest);
+      this.afterUpdate(torrent, peer, parameters);
     } catch (final IllegalArgumentException iae) {
       this.serveError(response, body, Status.BAD_REQUEST, ErrorMessage.FailureReason.INVALID_EVENT);
       return;
@@ -250,8 +254,8 @@ public class TrackerService implements Container {
    *
    * @return The {@link AnnounceRequestMessage} representing the client's announce request.
    */
-  private HttpAnnounceRequestMessage parseQuery(final Request request)
-          throws IOException, MessageValidationException {
+  private Map<String, BeValue> parseQuery(final Request request) throws IOException,
+                                                                        MessageValidationException {
     final Map<String, BeValue> params = new HashMap<>();
 
     try {
@@ -271,7 +275,7 @@ public class TrackerService implements Container {
                                    TrackedTorrent.BYTE_ENCODING));
     }
 
-    return HttpAnnounceRequestMessage.parse(BeEncoder.bencode(params));
+    return params;
   }
 
   private void recordParam(final Map<String, BeValue> params,
