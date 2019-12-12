@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.turn.ttorrent.bcodec.BeEncoder;
 import com.turn.ttorrent.bcodec.BeValue;
+import com.turn.ttorrent.bcodec.InvalidBEncodingException;
 import com.turn.ttorrent.common.protocol.TrackerMessage.AnnounceRequestMessage;
 import com.turn.ttorrent.common.protocol.TrackerMessage.ErrorMessage;
 import com.turn.ttorrent.common.protocol.TrackerMessage.MessageValidationException;
@@ -126,15 +127,15 @@ public class TrackerService implements Container {
     }
   }
 
-  protected void beforeUpdate(final TrackedTorrent torrent,
-                              final Map<String, BeValue> parameters) {
-
+  protected boolean beforeUpdate(final TrackedTorrent torrent,
+                                 final Map<String, BeValue> parameters) {
+    return true;
   }
 
-  protected void afterUpdate(final TrackedTorrent torrent,
-                             final TrackedPeer peer,
-                             final Map<String, BeValue> parameters) {
-
+  protected boolean afterUpdate(final TrackedTorrent torrent,
+                                final TrackedPeer peer,
+                                final Map<String, BeValue> parameters) {
+    return true;
   }
 
   /**
@@ -202,9 +203,42 @@ public class TrackerService implements Container {
       return;
     }
     // Update the torrent according to the announce event
-    final TrackedPeer peer;
+    final TrackedPeer peer = this.updateTracker(event,
+                                                torrent,
+                                                parameters,
+                                                announceRequest,
+                                                body,
+                                                response);
+    // Exit if any exception results into null peer
+    if (null == peer) {
+      return;
+    }
+    // Craft and output the answer
+    this.craftOutput(torrent, peer, response, body);
+  }
+
+  private TrackedPeer updateTracker(final AnnounceRequestMessage.RequestEvent event,
+                                    final TrackedTorrent torrent,
+                                    final Map<String, BeValue> parameters,
+                                    final HttpAnnounceRequestMessage announceRequest,
+                                    final OutputStream body,
+                                    final Response response)
+          throws UnsupportedEncodingException, InvalidBEncodingException, IOException {
+    TrackedPeer peer = null;
     try {
-      this.beforeUpdate(torrent, parameters);
+      if (!parameters.containsKey("uid") || !parameters.containsKey("credential")) {
+        LOG.warn(ErrorMessage.FailureReason.MISSING_CREDENTIAL.getMessage());
+        this.serveError(response,
+                        body,
+                        Status.BAD_REQUEST,
+                        ErrorMessage.FailureReason.MISSING_CREDENTIAL);
+        return peer;
+      }
+      if (!this.beforeUpdate(torrent, parameters)) {
+        LOG.info("User [{}] not allow to announce", parameters.get("uid").getInt());
+        this.serveError(response, body, Status.BAD_REQUEST, "user not allowed");
+        return peer;
+      }
       peer = torrent.update(event,
                             ByteBuffer.wrap(announceRequest.getPeerId()),
                             announceRequest.getHexPeerId(),
@@ -213,12 +247,24 @@ public class TrackerService implements Container {
                             announceRequest.getUploaded(),
                             announceRequest.getDownloaded(),
                             announceRequest.getLeft());
-      this.afterUpdate(torrent, peer, parameters);
+      if (!this.afterUpdate(torrent, peer, parameters)) {
+        LOG.info("User [{}] fail to announce", parameters.get("uid").getInt());
+        this.serveError(response, body, Status.BAD_REQUEST, "user fail to announce");
+        return peer;
+      }
     } catch (final IllegalArgumentException iae) {
-      this.serveError(response, body, Status.BAD_REQUEST, ErrorMessage.FailureReason.INVALID_EVENT);
-      return;
+      this.serveError(response,
+                      body,
+                      Status.BAD_REQUEST,
+                      ErrorMessage.FailureReason.INVALID_EVENT);
     }
-    // Craft and output the answer
+    return peer;
+  }
+
+  private void craftOutput(final TrackedTorrent torrent,
+                           final TrackedPeer peer,
+                           final Response response,
+                           final OutputStream body) throws IOException {
     try {
       final HttpAnnounceResponseMessage announceResponse = HttpAnnounceResponseMessage.craft(
               torrent.getAnnounceInterval(),
@@ -262,7 +308,9 @@ public class TrackerService implements Container {
       final String uri = request.getAddress().toString();
       for (String pair : uri.split("[?]")[1].split("&")) {
         final String[] keyval = pair.split("[=]", 2);
-        this.recordParam(params, keyval[0], keyval.length == 1 ? null : keyval[1]);
+        if (keyval.length > 1 && !keyval[1].isEmpty()) {
+          this.recordParam(params, keyval[0], keyval[1]);
+        }
       }
     } catch (final ArrayIndexOutOfBoundsException e) {
       params.clear();
@@ -280,15 +328,15 @@ public class TrackerService implements Container {
 
   private void recordParam(final Map<String, BeValue> params,
                            final String key,
-                           String value) {
+                           final String value) {
     try {
-      value = URLDecoder.decode(value, TrackedTorrent.BYTE_ENCODING);
+      final String v = URLDecoder.decode(value, TrackedTorrent.BYTE_ENCODING);
       if (NUMERIC_REQUEST_FIELDS.contains(key)) {
-        params.put(key, new BeValue(Long.valueOf(value)));
+        params.put(key, new BeValue(Long.valueOf(v)));
         return;
       }
 
-      params.put(key, new BeValue(value, TrackedTorrent.BYTE_ENCODING));
+      params.put(key, new BeValue(v, TrackedTorrent.BYTE_ENCODING));
     } catch (final UnsupportedEncodingException uee) {
       // Ignore, act like parameter was not there
       LOG.error("Specified encoding not supported", uee);

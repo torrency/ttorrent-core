@@ -269,6 +269,7 @@ public abstract class TrackerMessage {
       MISSING_HASH("Missing info hash"),
       MISSING_PEER_ID("Missing peer ID"),
       MISSING_PORT("Missing port"),
+      MISSING_CREDENTIAL("Missing user credential"),
       INVALID_EVENT("Unexpected event for peer state"),
       NOT_IMPLEMENTED("Feature not implemented");
 
