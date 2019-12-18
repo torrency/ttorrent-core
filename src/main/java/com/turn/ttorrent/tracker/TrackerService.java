@@ -66,6 +66,10 @@ import org.simpleframework.http.core.Container;
 @Slf4j
 public class TrackerService implements Container {
 
+  private static final String UID = "uid";
+
+  private static final String SECRET = "secret";
+
   /**
    * Default server name and version announced by the tracker.
    */
@@ -76,7 +80,7 @@ public class TrackerService implements Container {
    * converted as such in the request message parsing.
    */
   private static final Set<String> NUMERIC_REQUEST_FIELDS
-          = Set.of("uid", "port",
+          = Set.of(UID, "port",
                    "uploaded", "downloaded", "left",
                    "compact", "no_peer_id", "numwant");
 
@@ -226,16 +230,16 @@ public class TrackerService implements Container {
           throws UnsupportedEncodingException, InvalidBEncodingException, IOException {
     TrackedPeer peer = null;
     try {
-      if (!parameters.containsKey("uid") || !parameters.containsKey("credential")) {
-        LOG.warn(ErrorMessage.FailureReason.MISSING_CREDENTIAL.getMessage());
+      if (!parameters.containsKey(UID) || !parameters.containsKey(SECRET)) {
+        LOG.warn(ErrorMessage.FailureReason.MISSING_SECRET.getMessage());
         this.serveError(response,
                         body,
                         Status.BAD_REQUEST,
-                        ErrorMessage.FailureReason.MISSING_CREDENTIAL);
+                        ErrorMessage.FailureReason.MISSING_SECRET);
         return peer;
       }
       if (!this.beforeUpdate(torrent, parameters)) {
-        LOG.info("User [{}] not allow to announce", parameters.get("uid").getInt());
+        LOG.info("User [{}] not allow to announce", parameters.get(UID).getInt());
         this.serveError(response, body, Status.BAD_REQUEST, "user not allowed");
         return peer;
       }
@@ -248,7 +252,7 @@ public class TrackerService implements Container {
                             announceRequest.getDownloaded(),
                             announceRequest.getLeft());
       if (!this.afterUpdate(torrent, peer, parameters)) {
-        LOG.info("User [{}] fail to announce", parameters.get("uid").getInt());
+        LOG.info("User [{}] fail to announce", parameters.get(UID).getInt());
         this.serveError(response, body, Status.BAD_REQUEST, "user fail to announce");
         return peer;
       }
