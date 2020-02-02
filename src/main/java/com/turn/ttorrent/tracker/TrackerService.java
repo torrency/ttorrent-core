@@ -70,6 +70,8 @@ public class TrackerService implements Container {
 
   private static final String SECRET = "secret";
 
+  private static final String PEER_ID = "peer_id";
+
   /**
    * Default server name and version announced by the tracker.
    */
@@ -131,11 +133,29 @@ public class TrackerService implements Container {
     }
   }
 
+  /**
+   * Validation before updating the tracker.
+   *
+   * @param torrent    the torrent
+   * @param parameters all parameters from request
+   *
+   * @return true if everything is fine, this will go ahead and process the update. Otherwise,
+   *         return false to stop the update.
+   */
   protected boolean beforeUpdate(final TrackedTorrent torrent,
                                  final Map<String, BeValue> parameters) {
     return true;
   }
 
+  /**
+   * Validation after updating the tracker.
+   *
+   * @param torrent    torrent object
+   * @param peer       peer object
+   * @param parameters all parameters from request
+   *
+   * @return true to proceed with response, return false to stop response process.
+   */
   protected boolean afterUpdate(final TrackedTorrent torrent,
                                 final TrackedPeer peer,
                                 final Map<String, BeValue> parameters) {
@@ -230,12 +250,22 @@ public class TrackerService implements Container {
           throws UnsupportedEncodingException, InvalidBEncodingException, IOException {
     TrackedPeer peer = null;
     try {
+      // deny if has no credential
       if (!parameters.containsKey(UID) || !parameters.containsKey(SECRET)) {
         LOG.warn(ErrorMessage.FailureReason.MISSING_SECRET.getMessage());
         this.serveError(response,
                         body,
                         Status.BAD_REQUEST,
                         ErrorMessage.FailureReason.MISSING_SECRET);
+        return peer;
+      }
+      // deny if has no peer_id, which contains the client information
+      if (!parameters.containsKey(PEER_ID)) {
+        LOG.warn(ErrorMessage.FailureReason.MISSING_PEER_ID.getMessage());
+        this.serveError(response,
+                        body,
+                        Status.BAD_REQUEST,
+                        ErrorMessage.FailureReason.MISSING_PEER_ID);
         return peer;
       }
       if (!this.beforeUpdate(torrent, parameters)) {
