@@ -78,6 +78,13 @@ public abstract class PeerMessage {
       return this.id;
     }
 
+    /**
+     * Get enum type.
+     *
+     * @param c byte number
+     *
+     * @return type of enum
+     */
     public static Type get(final byte c) {
       for (Type t : Type.values()) {
         if (t.equals(c)) {
@@ -216,11 +223,30 @@ public abstract class PeerMessage {
       super(Type.KEEP_ALIVE, buffer);
     }
 
+    /**
+     * Parse the given buffer into a peer protocol message.
+     *
+     * <p>
+     * Parses the provided byte array and builds the corresponding PeerMessage subclass object.
+     * </p>
+     *
+     * @param buffer  The byte buffer containing the message data.
+     * @param torrent The torrent this message is about.
+     *
+     * @return A PeerMessage subclass instance.
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static KeepAliveMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       return (KeepAliveMessage) new KeepAliveMessage(buffer).validate(torrent);
     }
 
+    /**
+     * Create keep alive message.
+     *
+     * @return message
+     */
     public static KeepAliveMessage craft() {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + KeepAliveMessage.BASE_SIZE);
@@ -242,11 +268,26 @@ public abstract class PeerMessage {
       super(Type.CHOKE, buffer);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return choke message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static ChokeMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       return (ChokeMessage) new ChokeMessage(buffer).validate(torrent);
     }
 
+    /**
+     * Create chock message.
+     *
+     * @return message
+     */
     public static ChokeMessage craft() {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + ChokeMessage.BASE_SIZE);
@@ -269,11 +310,26 @@ public abstract class PeerMessage {
       super(Type.UNCHOKE, buffer);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return unchoke message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static UnchokeMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       return (UnchokeMessage) new UnchokeMessage(buffer).validate(torrent);
     }
 
+    /**
+     * Create unchock message.
+     *
+     * @return message
+     */
     public static UnchokeMessage craft() {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + UnchokeMessage.BASE_SIZE);
@@ -301,6 +357,11 @@ public abstract class PeerMessage {
       return (InterestedMessage) new InterestedMessage(buffer).validate(torrent);
     }
 
+    /**
+     * Create interested message.
+     *
+     * @return message
+     */
     public static InterestedMessage craft() {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + InterestedMessage.BASE_SIZE);
@@ -323,11 +384,26 @@ public abstract class PeerMessage {
       super(Type.NOT_INTERESTED, buffer);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return bit field message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static NotInterestedMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       return (NotInterestedMessage) new NotInterestedMessage(buffer).validate(torrent);
     }
 
+    /**
+     * Create not interested message.
+     *
+     * @return message
+     */
     public static NotInterestedMessage craft() {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + NotInterestedMessage.BASE_SIZE);
@@ -357,6 +433,9 @@ public abstract class PeerMessage {
       return this.piece;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public HaveMessage validate(final SharedTorrent torrent) throws MessageValidationException {
       if (this.piece >= 0 && this.piece < torrent.getPieceCount()) {
@@ -366,11 +445,28 @@ public abstract class PeerMessage {
       throw new MessageValidationException(this);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return bit field message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static HaveMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       return new HaveMessage(buffer, buffer.getInt()).validate(torrent);
     }
 
+    /**
+     * Create have message.
+     *
+     * @param piece data piece
+     *
+     * @return have message
+     */
     public static HaveMessage craft(final int piece) {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + HaveMessage.BASE_SIZE);
@@ -406,6 +502,9 @@ public abstract class PeerMessage {
       return this.bitfield;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BitfieldMessage validate(final SharedTorrent torrent) throws MessageValidationException {
       if (this.bitfield.length() <= torrent.getPieceCount()) {
@@ -415,6 +514,16 @@ public abstract class PeerMessage {
       throw new MessageValidationException(this);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return bit field message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static BitfieldMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       final BitSet bitfield = new BitSet(buffer.remaining() * 8);
@@ -427,6 +536,14 @@ public abstract class PeerMessage {
       return new BitfieldMessage(buffer, bitfield).validate(torrent);
     }
 
+    /**
+     * Create bit field message.
+     *
+     * @param availablePieces mostly available piece set
+     * @param pieceCount      number of piece
+     *
+     * @return bit field message
+     */
     public static BitfieldMessage craft(final BitSet availablePieces, final int pieceCount) {
       final BitSet bitfield = new BitSet();
       final int bitfieldBufferSize = (pieceCount + 8 - 1) / 8;
@@ -489,6 +606,9 @@ public abstract class PeerMessage {
       this.length = length;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RequestMessage validate(final SharedTorrent torrent) throws MessageValidationException {
       if (this.piece >= 0 && this.piece < torrent.getPieceCount()
@@ -499,6 +619,16 @@ public abstract class PeerMessage {
       throw new MessageValidationException(this);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return request message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static RequestMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       final int piece = buffer.getInt();
@@ -508,6 +638,15 @@ public abstract class PeerMessage {
                                 offset, length).validate(torrent);
     }
 
+    /**
+     * Create request message.
+     *
+     * @param piece  target piece
+     * @param offset offset position
+     * @param length piece length
+     *
+     * @return message request
+     */
     public static RequestMessage craft(final int piece, final int offset, final int length) {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + RequestMessage.BASE_SIZE);
@@ -554,9 +693,11 @@ public abstract class PeerMessage {
       this.block = block;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public PieceMessage validate(final SharedTorrent torrent)
-            throws MessageValidationException {
+    public PieceMessage validate(final SharedTorrent torrent) throws MessageValidationException {
       if (this.piece >= 0 && this.piece < torrent.getPieceCount()
           && this.offset + this.block.limit()
              <= torrent.getPiece(this.piece).size()) {
@@ -566,6 +707,16 @@ public abstract class PeerMessage {
       throw new MessageValidationException(this);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return piece message
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static PieceMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       final int piece = buffer.getInt();
@@ -574,6 +725,15 @@ public abstract class PeerMessage {
       return new PieceMessage(buffer, piece, offset, block).validate(torrent);
     }
 
+    /**
+     * Create piece message.
+     *
+     * @param piece  piece to include
+     * @param offset offset position
+     * @param block  file bock
+     *
+     * @return piece message
+     */
     public static PieceMessage craft(final int piece, final int offset, final ByteBuffer block) {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + PieceMessage.BASE_SIZE + block.capacity());
@@ -620,6 +780,9 @@ public abstract class PeerMessage {
       this.length = length;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CancelMessage validate(final SharedTorrent torrent) throws MessageValidationException {
       if (this.piece >= 0 && this.piece < torrent.getPieceCount()
@@ -630,6 +793,16 @@ public abstract class PeerMessage {
       throw new MessageValidationException(this);
     }
 
+    /**
+     * Parse inbound buffer.
+     *
+     * @param buffer  input data
+     * @param torrent target torrent
+     *
+     * @return message to cancel
+     *
+     * @throws MessageValidationException unable to parse buffer
+     */
     public static CancelMessage parse(final ByteBuffer buffer, final SharedTorrent torrent)
             throws MessageValidationException {
       final int piece = buffer.getInt();
@@ -638,6 +811,15 @@ public abstract class PeerMessage {
       return new CancelMessage(buffer, piece, offset, length).validate(torrent);
     }
 
+    /**
+     * Create peer message.
+     *
+     * @param piece  message piece
+     * @param offset offset of position
+     * @param length message length
+     *
+     * @return message to cancel
+     */
     public static CancelMessage craft(final int piece, final int offset, final int length) {
       final ByteBuffer buffer = ByteBuffer.allocateDirect(
               MESSAGE_LENGTH_FIELD_SIZE + CancelMessage.BASE_SIZE);
@@ -649,6 +831,11 @@ public abstract class PeerMessage {
       return new CancelMessage(buffer, piece, offset, length);
     }
 
+    /**
+     * Human readable string representation.
+     *
+     * @return peer message in human readable manner
+     */
     @Override
     public String toString() {
       return String.format("%s #%d (%d@%d)",

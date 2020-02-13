@@ -50,6 +50,11 @@ public class TrackedPeer extends Peer {
   private static final int FRESH_TIME_SECONDS = 30;
 
   /**
+   * User ID from PT server.
+   */
+  private int uid;
+
+  /**
    * How many bytes the peer reported it has uploaded so far.
    */
   private long uploaded;
@@ -119,16 +124,19 @@ public class TrackedPeer extends Peer {
    * Instantiate a new tracked peer for the given torrent.
    *
    * @param torrent The torrent this peer exchanges on.
+   * @param uid     user id
    * @param ip      The peer's IP address.
    * @param port    The peer's port.
    * @param peerId  The byte-encoded peer ID.
    */
   public TrackedPeer(final Torrent torrent,
+                     final int uid,
                      final String ip,
                      final int port,
                      final ByteBuffer peerId) {
     super(ip, port, peerId);
     this.torrent = torrent;
+    this.uid = uid;
 
     // Instantiated peers start in the UNKNOWN state.
     this.state = PeerState.UNKNOWN;

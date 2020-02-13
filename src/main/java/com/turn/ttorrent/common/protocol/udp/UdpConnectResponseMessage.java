@@ -46,6 +46,15 @@ public class UdpConnectResponseMessage extends UdpTrackerMessage.UdpTrackerRespo
     this.connectionId = connectionId;
   }
 
+  /**
+   * Parse inbound connect response message.
+   *
+   * @param data tracker buffer
+   *
+   * @return HTTP connect response message
+   *
+   * @throws MessageValidationException Invalid message
+   */
   public static UdpConnectResponseMessage parse(final ByteBuffer data)
           throws MessageValidationException {
     if (data.remaining() != UDP_CONNECT_RESPONSE_MESSAGE_SIZE) {
@@ -64,6 +73,15 @@ public class UdpConnectResponseMessage extends UdpTrackerMessage.UdpTrackerRespo
     );
   }
 
+  /**
+   * Create connect response message.
+   *
+   * @param transactionId transaction id
+   * @param connectionId  connection id
+   *
+   * @return message
+   *
+   */
   public static UdpConnectResponseMessage craft(final int transactionId,
                                                 final long connectionId) {
     final ByteBuffer data = ByteBuffer.allocate(UDP_CONNECT_RESPONSE_MESSAGE_SIZE);

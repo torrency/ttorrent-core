@@ -48,6 +48,15 @@ public class UdpTrackerErrorMessage extends UdpTrackerMessage.UdpTrackerResponse
     this.reason = reason;
   }
 
+  /**
+   * Parse inbound tracker error message.
+   *
+   * @param data tracker buffer
+   *
+   * @return HTTP tracker error message
+   *
+   * @throws MessageValidationException Invalid message
+   */
   public static UdpTrackerErrorMessage parse(final ByteBuffer data)
           throws MessageValidationException {
     if (data.remaining() < UDP_TRACKER_ERROR_MIN_MESSAGE_SIZE) {
@@ -74,6 +83,16 @@ public class UdpTrackerErrorMessage extends UdpTrackerMessage.UdpTrackerResponse
     }
   }
 
+  /**
+   * Create tracker error message.
+   *
+   * @param transactionId transaction id
+   * @param reason        error reason
+   *
+   * @return message
+   *
+   * @throws UnsupportedEncodingException encoding not supported
+   */
   public static UdpTrackerErrorMessage craft(final int transactionId,
                                              final String reason)
           throws UnsupportedEncodingException {

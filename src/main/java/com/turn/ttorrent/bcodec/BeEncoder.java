@@ -43,6 +43,15 @@ import java.util.Set;
  */
 public class BeEncoder {
 
+  /**
+   * Bencode object.
+   *
+   * @param o   any object type
+   * @param out byte stream to write
+   *
+   * @throws IOException              unable to bencode
+   * @throws IllegalArgumentException No way to encode this type of object
+   */
   @SuppressWarnings("unchecked")
   public static void bencode(Object o, final OutputStream out) throws IOException,
                                                                       IllegalArgumentException {
@@ -65,11 +74,27 @@ public class BeEncoder {
     }
   }
 
+  /**
+   * Bencode string.
+   *
+   * @param s   string to encode
+   * @param out byte stream to write
+   *
+   * @throws IOException unable to bencode
+   */
   public static void bencode(final String s, final OutputStream out) throws IOException {
     final byte[] bs = s.getBytes("UTF-8");
     bencode(bs, out);
   }
 
+  /**
+   * Bencode number.
+   *
+   * @param n   number
+   * @param out byte stream to write
+   *
+   * @throws IOException unable to bencode
+   */
   public static void bencode(final Number n, final OutputStream out) throws IOException {
     out.write('i');
     final String s = n.toString();
@@ -77,6 +102,14 @@ public class BeEncoder {
     out.write('e');
   }
 
+  /**
+   * Bencode list.
+   *
+   * @param l   list of bencoded value
+   * @param out byte stream to write
+   *
+   * @throws IOException unable to bencode
+   */
   public static void bencode(final List<BeValue> l, final OutputStream out) throws IOException {
     out.write('l');
     for (BeValue value : l) {
@@ -85,6 +118,14 @@ public class BeEncoder {
     out.write('e');
   }
 
+  /**
+   * Bencode byte array.
+   *
+   * @param bs  byte array
+   * @param out byte stream to write
+   *
+   * @throws IOException unable to bencode
+   */
   public static void bencode(final byte[] bs, final OutputStream out) throws IOException {
     final String l = Integer.toString(bs.length);
     out.write(l.getBytes("UTF-8"));
@@ -92,6 +133,14 @@ public class BeEncoder {
     out.write(bs);
   }
 
+  /**
+   * Bencode map.
+   *
+   * @param m map data
+   * @param out byte stream to write
+   *
+   * @throws IOException unable to bencode
+   */
   public static void bencode(final Map<String, BeValue> m, final OutputStream out)
           throws IOException {
     out.write('d');
@@ -110,6 +159,15 @@ public class BeEncoder {
     out.write('e');
   }
 
+  /**
+   * Bencode map.
+   *
+   * @param m map data
+   *
+   * @return encoded buffer object
+   *
+   * @throws IOException unable to bencode
+   */
   public static ByteBuffer bencode(final Map<String, BeValue> m) throws IOException {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     BeEncoder.bencode(m, baos);

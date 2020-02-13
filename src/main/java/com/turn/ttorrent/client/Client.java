@@ -137,6 +137,7 @@ public class Client extends Observable implements Runnable,
    * @param torrent The torrent to download and share.
    *
    * @throws UnknownHostException Host not known
+   * @throws IOException          unable to create connection handler
    */
   public Client(final InetAddress address, final SharedTorrent torrent)
           throws UnknownHostException, IOException {
@@ -749,7 +750,7 @@ public class Client extends Observable implements Runnable,
   }
 
   /**
-   * PeerActivityListener handler(s). *************************************
+   * {@inheritDoc}
    */
   @Override
   public void handlePeerChoked(final SharingPeer peer) {
@@ -758,6 +759,9 @@ public class Client extends Observable implements Runnable,
      */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void handlePeerReady(final SharingPeer peer) {
     /*
@@ -765,6 +769,9 @@ public class Client extends Observable implements Runnable,
      */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void handlePieceAvailability(final SharingPeer peer, final Piece piece) {
     /*
@@ -772,6 +779,9 @@ public class Client extends Observable implements Runnable,
      */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void handleBitfieldAvailability(final SharingPeer peer, final BitSet availablePieces) {
     /*
@@ -779,6 +789,9 @@ public class Client extends Observable implements Runnable,
      */
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void handlePieceSent(final SharingPeer peer, final Piece piece) {
     /*
@@ -801,6 +814,8 @@ public class Client extends Observable implements Runnable,
    *
    * @param peer  The peer we got the piece from.
    * @param piece The piece in question.
+   *
+   * @throws IOException unable to finish piece
    */
   @Override
   public void handlePieceCompleted(final SharingPeer peer, final Piece piece) throws IOException {

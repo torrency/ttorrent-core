@@ -45,6 +45,15 @@ public class UdpConnectRequestMessage extends UdpTrackerMessage.UdpTrackerReques
     this.transactionId = transactionId;
   }
 
+  /**
+   * Parse inbound connect request message.
+   *
+   * @param data tracker buffer
+   *
+   * @return HTTP connect request message
+   *
+   * @throws MessageValidationException Invalid message
+   */
   public static UdpConnectRequestMessage parse(final ByteBuffer data)
           throws MessageValidationException {
     if (data.remaining() != UDP_CONNECT_REQUEST_MESSAGE_SIZE) {
@@ -67,6 +76,13 @@ public class UdpConnectRequestMessage extends UdpTrackerMessage.UdpTrackerReques
     );
   }
 
+  /**
+   * Create connect request message.
+   *
+   * @param transactionId transaction id
+   *
+   * @return message
+   */
   public static UdpConnectRequestMessage craft(final int transactionId) {
     final ByteBuffer data = ByteBuffer.allocate(UDP_CONNECT_REQUEST_MESSAGE_SIZE);
     data.putLong(UDP_CONNECT_REQUEST_MAGIC);

@@ -91,6 +91,7 @@ public class BeValue {
    * @return get string with encoding
    *
    * @throws InvalidBEncodingException If the value is not a byte[].
+   * @throws InternalError             encoding not support
    */
   public String getString(final String encoding) throws InvalidBEncodingException {
     try {

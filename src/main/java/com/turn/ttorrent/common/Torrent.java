@@ -354,6 +354,8 @@ public class Torrent {
    * <p>
    * The torrent's name is used.
    * </p>
+   *
+   * @return human-readable string
    */
   @Override
   public String toString() {
@@ -398,6 +400,15 @@ public class Torrent {
     output.write(this.getEncoded());
   }
 
+  /**
+   * Create SHA-1 hash code for given data.
+   *
+   * @param data torrent byte array
+   *
+   * @return SHA-1 byte array
+   *
+   * @throws NoSuchAlgorithmException algorithm not found
+   */
   public static byte[] hash(final byte[] data) throws NoSuchAlgorithmException {
     final MessageDigest crypt = MessageDigest.getInstance("SHA-1");
     crypt.reset();

@@ -61,6 +61,15 @@ public class UdpAnnounceResponseMessage extends UdpTrackerMessage.UdpTrackerResp
     this.peers = peers;
   }
 
+  /**
+   * Parse inbound response message.
+   *
+   * @param data tracker buffer
+   *
+   * @return HTTP request message
+   *
+   * @throws MessageValidationException Invalid message
+   */
   public static UdpAnnounceResponseMessage parse(final ByteBuffer data)
           throws MessageValidationException {
     if (data.remaining() < UDP_ANNOUNCE_RESPONSE_MIN_MESSAGE_SIZE
@@ -102,6 +111,17 @@ public class UdpAnnounceResponseMessage extends UdpTrackerMessage.UdpTrackerResp
                                           peers);
   }
 
+  /**
+   * Create tracker error message.
+   *
+   * @param transactionId transaction id
+   * @param interval      communication interval
+   * @param complete      complete number
+   * @param incomplete    incomplete number
+   * @param peers         peer information
+   *
+   * @return message
+   */
   public static UdpAnnounceResponseMessage craft(final int transactionId,
                                                  final int interval,
                                                  final int complete,

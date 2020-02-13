@@ -57,6 +57,15 @@ public class FileStorage implements TorrentByteStorage {
     this(file, 0, size);
   }
 
+  /**
+   * Instantiate file storage object.
+   *
+   * @param file   torrent file
+   * @param offset current offset
+   * @param size   size of file
+   *
+   * @throws IOException unable to open this file
+   */
   public FileStorage(final File file, final long offset, final long size) throws IOException {
     this.target = file;
     this.offset = offset;
@@ -130,6 +139,11 @@ public class FileStorage implements TorrentByteStorage {
     return this.channel.write(buffer, offset);
   }
 
+  /**
+   * Close torrent file channel.
+   *
+   * @throws IOException unable to close
+   */
   @Override
   public synchronized void close() throws IOException {
     LOG.debug("Closing file channel to " + this.current.getName() + "...");
@@ -141,6 +155,8 @@ public class FileStorage implements TorrentByteStorage {
 
   /**
    * Move the partial file to its final location.
+   *
+   * @throws IOException unable to manage file
    */
   @Override
   public synchronized void finish() throws IOException {

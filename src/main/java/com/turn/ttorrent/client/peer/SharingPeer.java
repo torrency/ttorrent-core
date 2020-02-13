@@ -193,6 +193,9 @@ public class SharingPeer extends Peer implements MessageListener {
     }
   }
 
+  /**
+   * Send interest intention.
+   */
   public void interesting() {
     if (!this.interesting) {
       LOG.trace("Telling {} we're interested.", this);
@@ -201,6 +204,9 @@ public class SharingPeer extends Peer implements MessageListener {
     }
   }
 
+  /**
+   * Send no interest intention.
+   */
   public void notInteresting() {
     if (this.interesting) {
       LOG.trace("Telling {} we're no longer interested.", this);
@@ -304,6 +310,8 @@ public class SharingPeer extends Peer implements MessageListener {
    * </p>
    *
    * @param message The message to send to the remote peer through our peer exchange.
+   *
+   * @throws IllegalStateException peer state invalid
    */
   public void send(final PeerMessage message) throws IllegalStateException {
     if (this.isConnected()) {
@@ -325,6 +333,8 @@ public class SharingPeer extends Peer implements MessageListener {
    * </p>
    *
    * @param piece The piece chosen to be downloaded from this peer.
+   *
+   * @throws IllegalStateException download state invalid
    */
   public synchronized void downloadPiece(final Piece piece) throws IllegalStateException {
     if (this.isDownloading()) {

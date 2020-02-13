@@ -43,6 +43,15 @@ public abstract class UdpTrackerMessage extends TrackerMessage {
       super(type, data);
     }
 
+    /**
+     * Parse inbound response message.
+     *
+     * @param data tracker buffer
+     *
+     * @return HTTP request message
+     *
+     * @throws MessageValidationException Invalid message
+     */
     public static UdpTrackerRequestMessage parse(final ByteBuffer data)
             throws MessageValidationException {
       if (data.remaining() < UDP_MIN_REQUEST_PACKET_SIZE) {
@@ -77,6 +86,15 @@ public abstract class UdpTrackerMessage extends TrackerMessage {
       super(type, data);
     }
 
+    /**
+     * Parse inbound response message.
+     *
+     * @param data tracker buffer
+     *
+     * @return HTTP request message
+     *
+     * @throws MessageValidationException Invalid message
+     */
     public static UdpTrackerResponseMessage parse(final ByteBuffer data)
             throws MessageValidationException {
       if (data.remaining() < UDP_MIN_RESPONSE_PACKET_SIZE) {

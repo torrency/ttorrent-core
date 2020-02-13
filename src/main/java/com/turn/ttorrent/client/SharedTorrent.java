@@ -351,7 +351,8 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * </p>
    *
    * @throws InterruptedException When thread interrupted
-   * @throws IOException          unable to validate piece
+   * @throws IOException           unable to validate piece
+   * @throws IllegalStateException torrent is already initialized
    */
   public synchronized void init() throws InterruptedException, IOException {
     if (this.isInitialized()) {
@@ -445,6 +446,9 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
     }
   }
 
+  /**
+   * Close torrent activity.
+   */
   public synchronized void close() {
     try {
       this.bucket.close();
@@ -459,6 +463,9 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * @param index The index of the piece in this torrent.
    *
    * @return specified piece
+   *
+   * @throws IllegalStateException    torrent has not been initialized
+   * @throws IllegalArgumentException piece invalid
    */
   public Piece getPiece(final int index) {
     if (this.pieces == null) {
@@ -476,6 +483,8 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * Get the number of pieces in this torrent.
    *
    * @return length of pieces
+   *
+   * @throws IllegalStateException torrent has not been initialized
    */
   public int getPieceCount() {
     if (this.pieces == null) {
@@ -493,6 +502,8 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * </p>
    *
    * @return get available pieces
+   *
+   * @throws IllegalStateException torrent has not been initialized
    */
   public BitSet getAvailablePieces() {
     if (!this.isInitialized()) {
@@ -516,6 +527,8 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * Return a copy of the completed pieces bitset.
    *
    * @return get completed pieces
+   *
+   * @throws IllegalStateException torrent has not been initialized
    */
   public BitSet getCompletedPieces() {
     if (!this.isInitialized()) {
@@ -531,6 +544,8 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * Return a copy of the requested pieces bitset.
    *
    * @return get requested pieces
+   *
+   * @throws IllegalStateException torrent has not been initialized
    */
   public BitSet getRequestedPieces() {
     if (!this.isInitialized()) {
@@ -560,8 +575,10 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
    * putting the torrent data in their final form and at their target location.
    * </p>
    *
-   * @throws java.io.IOException Unable to finalize
+   * @throws java.io.IOException   Unable to finalize
+   * @throws IllegalStateException torrent has not been initialized
    * @see TorrentByteStorage#finish
+   *
    */
   public synchronized void finish() throws IOException {
     if (!this.isInitialized()) {

@@ -65,6 +65,16 @@ public class HttpAnnounceResponseMessage extends HttpTrackerMessage
     this.peers = peers;
   }
 
+  /**
+   * Parse response message.
+   *
+   * @param data tracker message buffer
+   *
+   * @return message
+   *
+   * @throws IOException                unable to bdecode
+   * @throws MessageValidationException invalid message
+   */
   public static HttpAnnounceResponseMessage parse(final ByteBuffer data)
           throws IOException, MessageValidationException {
     final BeValue decoded = BeDecoder.bdecode(data);

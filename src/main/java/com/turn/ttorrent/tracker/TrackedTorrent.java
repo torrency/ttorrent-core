@@ -167,6 +167,8 @@ public class TrackedTorrent extends Torrent {
    * Set the announce interval for this torrent.
    *
    * @param interval New announce interval, in seconds.
+   *
+   * @throws IllegalArgumentException announce interval must be positive
    */
   public void setAnnounceInterval(final int interval) {
     if (interval <= 0) {
@@ -186,6 +188,7 @@ public class TrackedTorrent extends Torrent {
    *
    * @param event      The reported event. If <em>null</em>, means a regular interval announce
    *                   event, as defined in the BitTorrent specification.
+   * @param uid        user identification from PT server
    * @param peerId     The byte-encoded peer ID.
    * @param hexPeerId  The hexadecimal representation of the peer's ID.
    * @param ip         The peer's IP address.
@@ -199,6 +202,7 @@ public class TrackedTorrent extends Torrent {
    * @throws UnsupportedEncodingException character encoding not supported
    */
   public TrackedPeer update(final RequestEvent event,
+                            final int uid,
                             final ByteBuffer peerId,
                             final String hexPeerId,
                             final String ip,
@@ -211,7 +215,7 @@ public class TrackedTorrent extends Torrent {
 
     switch (event) {
       case STARTED:
-        peer = new TrackedPeer(this, ip, port, peerId);
+        peer = new TrackedPeer(this, uid, ip, port, peerId);
         state = TrackedPeer.PeerState.STARTED;
         this.addPeer(peer);
         break;

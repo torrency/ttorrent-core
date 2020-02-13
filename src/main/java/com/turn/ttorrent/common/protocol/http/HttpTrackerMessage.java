@@ -35,6 +35,16 @@ public abstract class HttpTrackerMessage extends TrackerMessage {
     super(type, data);
   }
 
+  /**
+   * Parse tracker buffer.
+   *
+   * @param data tracker message buffer
+   *
+   * @return message
+   *
+   * @throws IOException                unable to bdecode
+   * @throws MessageValidationException invalid message
+   */
   public static HttpTrackerMessage parse(final ByteBuffer data) throws IOException,
                                                                        MessageValidationException {
     final BeValue decoded = BeDecoder.bdecode(data);

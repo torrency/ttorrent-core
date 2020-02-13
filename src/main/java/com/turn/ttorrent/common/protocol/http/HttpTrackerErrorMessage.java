@@ -44,6 +44,16 @@ public class HttpTrackerErrorMessage extends HttpTrackerMessage implements Error
     this.reason = reason;
   }
 
+  /**
+   * Parse tracker buffer.
+   *
+   * @param data tracker message buffer
+   *
+   * @return message
+   *
+   * @throws IOException                unable to bdecode
+   * @throws MessageValidationException invalid message
+   */
   public static HttpTrackerErrorMessage parse(final ByteBuffer data)
           throws IOException, MessageValidationException {
     final BeValue decoded = BeDecoder.bdecode(data);
@@ -64,11 +74,31 @@ public class HttpTrackerErrorMessage extends HttpTrackerMessage implements Error
     }
   }
 
+  /**
+   * Create http tracker error message.
+   *
+   * @param reason error message
+   *
+   * @return message
+   *
+   * @throws IOException                unable to bencode
+   * @throws MessageValidationException invalid message
+   */
   public static HttpTrackerErrorMessage craft(final ErrorMessage.FailureReason reason)
           throws IOException, MessageValidationException {
     return HttpTrackerErrorMessage.craft(reason.getMessage());
   }
 
+  /**
+   * Create http tracker error message.
+   *
+   * @param reason error message
+   *
+   * @return message
+   *
+   * @throws IOException                unable to bencode
+   * @throws MessageValidationException invalid message
+   */
   public static HttpTrackerErrorMessage craft(final String reason)
           throws IOException, MessageValidationException {
     final Map<String, BeValue> params = new HashMap<>();

@@ -57,6 +57,16 @@ public class Handshake {
     return this.peerId.array();
   }
 
+  /**
+   * Parse hand shake protocol.
+   *
+   * @param buffer hand shake communication buffer
+   *
+   * @return parsed hand shake object
+   *
+   * @throws ParseException               unable to parse buffer
+   * @throws UnsupportedEncodingException buffer encoding not supported
+   */
   public static Handshake parse(final ByteBuffer buffer) throws ParseException,
                                                                 UnsupportedEncodingException {
     final int pstrlen = Byte.valueOf(buffer.get()).intValue();
@@ -83,6 +93,14 @@ public class Handshake {
     return new Handshake(buffer, ByteBuffer.wrap(infoHash), ByteBuffer.wrap(peerId));
   }
 
+  /**
+   * Create hand shake object by torrent and client information.
+   *
+   * @param torrentInfoHash torrent hash
+   * @param clientPeerId    peer id
+   *
+   * @return hand shake object
+   */
   public static Handshake craft(final byte[] torrentInfoHash, final byte[] clientPeerId) {
     try {
       final ByteBuffer buffer = ByteBuffer.allocate(

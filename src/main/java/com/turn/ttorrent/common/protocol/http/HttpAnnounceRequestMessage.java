@@ -170,6 +170,16 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     return new URL(url.toString());
   }
 
+  /**
+   * Parse inbound tracker message.
+   *
+   * @param data tracker buffer
+   *
+   * @return HTTP request message
+   *
+   * @throws IOException                Unable to bdecode
+   * @throws MessageValidationException Invalid message
+   */
   public static HttpAnnounceRequestMessage parse(final ByteBuffer data)
           throws IOException, MessageValidationException {
     final BeValue decoded = BeDecoder.bdecode(data);
@@ -282,6 +292,27 @@ public class HttpAnnounceRequestMessage extends HttpTrackerMessage
     return params;
   }
 
+  /**
+   * Create HTTP request message.
+   *
+   * @param infoHash   hash
+   * @param peerId     peer_id
+   * @param port       communication port
+   * @param uploaded   byte of uploaded
+   * @param downloaded byte of downloaded
+   * @param left       byte of left
+   * @param compact    is this compact request
+   * @param noPeerId   no peer_id
+   * @param event      request event
+   * @param ip         client IP
+   * @param numWant    number of piece want
+   *
+   * @return HTTP request message
+     *
+   * @throws IOException                  unable to bencode
+   * @throws MessageValidationException   unable to validate message
+   * @throws UnsupportedEncodingException encoding not supported
+   */
   public static HttpAnnounceRequestMessage craft(final byte[] infoHash,
                                                  final byte[] peerId,
                                                  final int port,

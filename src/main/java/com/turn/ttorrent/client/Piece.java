@@ -274,6 +274,8 @@ public class Piece implements Comparable<Piece> {
 
   /**
    * Return a human-readable representation of this piece.
+   *
+   * @return human readable representation
    */
   @Override
   public String toString() {

@@ -273,7 +273,9 @@ public class TrackerService implements Container {
         this.serveError(response, body, Status.BAD_REQUEST, "user not allowed");
         return peer;
       }
+      final int uid = parameters.get(UID).getInt();
       peer = torrent.update(event,
+                            uid,
                             ByteBuffer.wrap(announceRequest.getPeerId()),
                             announceRequest.getHexPeerId(),
                             announceRequest.getIp(),

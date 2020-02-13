@@ -170,6 +170,8 @@ public class ConnectionHandler implements Runnable {
 
   /**
    * Start accepting new connections in a background thread.
+   *
+   * @throws IllegalStateException this handler is used
    */
   public void start() {
     if (this.channel == null) {
@@ -337,6 +339,8 @@ public class ConnectionHandler implements Runnable {
    * </p>
    *
    * @param peer The peer to connect to.
+   *
+   * @throws IllegalStateException unable to accept new peer
    */
   public void connect(final SharingPeer peer) {
     if (!this.isAlive()) {

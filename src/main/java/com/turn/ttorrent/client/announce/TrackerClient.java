@@ -41,6 +41,13 @@ public abstract class TrackerClient {
 
   protected final URI tracker;
 
+  /**
+   * Create tracker client object.
+   *
+   * @param torrent torrent to interact with
+   * @param peer    peer information
+   * @param tracker tracker address
+   */
   public TrackerClient(final SharedTorrent torrent, final Peer peer, final URI tracker) {
     this.listeners = new HashSet<>();
     this.torrent = torrent;

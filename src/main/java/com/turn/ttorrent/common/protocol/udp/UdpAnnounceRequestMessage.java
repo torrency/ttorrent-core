@@ -130,6 +130,15 @@ public class UdpAnnounceRequestMessage extends UdpTrackerMessage.UdpTrackerReque
     return this.ip.toString();
   }
 
+  /**
+   * Parse tracker buffer.
+   *
+   * @param data tracker message buffer
+   *
+   * @return message
+   *
+   * @throws MessageValidationException invalid message
+   */
   public static UdpAnnounceRequestMessage parse(final ByteBuffer data)
           throws MessageValidationException {
     if (data.remaining() != UDP_ANNOUNCE_REQUEST_MESSAGE_SIZE) {
@@ -184,6 +193,26 @@ public class UdpAnnounceRequestMessage extends UdpTrackerMessage.UdpTrackerReque
                                          port);
   }
 
+  /**
+   * Create HTTP request message.
+   *
+   * @param connectionId  connection id
+   * @param transactionId transaction id
+   * @param infoHash      hash
+   * @param peerId        peer_id
+   * @param port          communication port
+   * @param uploaded      byte of uploaded
+   * @param downloaded    byte of downloaded
+   * @param left          byte of left
+   * @param event         request event
+   * @param key           key object
+   * @param ip            client IP
+   * @param numWant       number of piece want
+   *
+   * @return HTTP request message
+   *
+   * @throws IllegalArgumentException IPv6 not supported by UDP
+   */
   public static UdpAnnounceRequestMessage craft(final long connectionId,
                                                 final int transactionId,
                                                 final byte[] infoHash,
