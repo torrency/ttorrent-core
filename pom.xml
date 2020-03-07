@@ -10,7 +10,7 @@
   <version>1.2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Java BitTorrent library core</name>
-  <url>https://github.com/Rugal/commitlinter-maven-plugin</url>
+  <url>https://github.com/Rugal/ttorrent-core</url>
   <description>
     ttorrent is a pure-Java implementation of the BitTorrent protocol,
     including support for several BEPs. It also provides a standalone client,

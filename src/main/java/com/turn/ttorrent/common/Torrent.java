@@ -349,13 +349,10 @@ public class Torrent {
   }
 
   /**
-   * Return a human-readable representation of this torrent object.
-   *
-   * <p>
+   * Return a human-readable representation of this torrent object. <BR>
    * The torrent's name is used.
-   * </p>
    *
-   * @return human-readable string
+   * @return Torrent name
    */
   @Override
   public String toString() {
@@ -407,7 +404,7 @@ public class Torrent {
    *
    * @return SHA-1 byte array
    *
-   * @throws NoSuchAlgorithmException algorithm not found
+   * @throws NoSuchAlgorithmException Unable to find SHA-1 algorithm
    */
   public static byte[] hash(final byte[] data) throws NoSuchAlgorithmException {
     final MessageDigest crypt = MessageDigest.getInstance("SHA-1");
