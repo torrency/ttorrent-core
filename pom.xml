@@ -22,7 +22,7 @@
     <!-- configuration -->
     <jacoco.skip.coverage.check>true</jacoco.skip.coverage.check>
     <!-- dependency -->
-    <io.version>2.4</io.version>
+    <io.version>2.7</io.version>
     <simpleframework.version>4.1.21</simpleframework.version>
   </properties>
   
