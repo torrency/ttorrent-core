@@ -7,7 +7,7 @@
   </parent>
   
   <artifactId>ttorrent</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Java BitTorrent library core</name>
   <url>https://github.com/Rugal/ttorrent-core</url>
@@ -30,7 +30,7 @@
     <connection>scm:git:git://github.com/Rugal/ttorrent-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Rugal/ttorrent-core.git</developerConnection>
     <url>https://github.com/Rugal/ttorrent-core</url>
-    <tag>v1.2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
