@@ -19,6 +19,8 @@ package com.turn.ttorrent.client.peer;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * A data exchange rate representation.
  *
@@ -29,6 +31,7 @@ import java.util.Comparator;
  *
  * @author mpetazzoni
  */
+@EqualsAndHashCode
 public class Rate implements Comparable<Rate> {
 
   public static final Comparator<Rate> RATE_COMPARATOR = new RateComparator();

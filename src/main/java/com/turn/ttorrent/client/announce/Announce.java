@@ -246,7 +246,7 @@ public class Announce implements Runnable {
       }
 
       try {
-        Thread.sleep(this.interval * 1000);
+        Thread.sleep(this.interval * 1000L);
       } catch (final InterruptedException ie) {
         // Ignore
       }

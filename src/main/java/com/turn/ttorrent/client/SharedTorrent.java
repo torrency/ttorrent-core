@@ -292,9 +292,10 @@ public class SharedTorrent extends Torrent implements PeerActivityListener {
                                     + "to break directory jail!");
       }
 
-      actual.getParentFile().mkdirs();
-      files.add(new FileStorage(actual, offset, file.size));
-      offset += file.size;
+      if (actual.getParentFile().mkdirs()) {
+        files.add(new FileStorage(actual, offset, file.size));
+        offset += file.size; 
+      }
     }
     this.bucket = new FileCollectionStorage(files, this.getSize());
 

@@ -404,8 +404,7 @@ public class PeerExchange {
       try {
         // Loop until told to stop. When stop was requested, loop until
         // the queue is served.
-        while (!PeerExchange.this.stop
-               || PeerExchange.this.stop && PeerExchange.this.sendQueue.size() > 0) {
+        while (!PeerExchange.this.stop || !PeerExchange.this.sendQueue.isEmpty()) {
           try {
             // Wait for two minutes for a message to send
             PeerMessage message = PeerExchange.this.sendQueue

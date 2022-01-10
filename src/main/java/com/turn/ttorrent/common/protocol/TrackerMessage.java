@@ -18,6 +18,7 @@ package com.turn.ttorrent.common.protocol;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Locale;
 
 import com.turn.ttorrent.common.Peer;
 import lombok.Getter;
@@ -170,7 +171,7 @@ public abstract class TrackerMessage {
       }
 
       public String getEventName() {
-        return this.name().toLowerCase();
+        return this.name().toLowerCase(Locale.US);
       }
 
       public int getId() {

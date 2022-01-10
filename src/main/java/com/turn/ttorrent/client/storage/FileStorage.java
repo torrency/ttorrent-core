@@ -120,12 +120,14 @@ public class FileStorage implements TorrentByteStorage {
       throw new IllegalArgumentException("Invalid storage read request!");
     }
 
-    final int bytes = this.channel.read(buffer, offset);
-    if (bytes < requested) {
-      throw new IOException("Storage underrun!");
-    }
+    synchronized (this) {
+      final int bytes = this.channel.read(buffer, offset); 
+      if (bytes < requested) {
+        throw new IOException("Storage underrun!");
+      }
 
-    return bytes;
+      return bytes;
+    }
   }
 
   @Override
@@ -136,7 +138,9 @@ public class FileStorage implements TorrentByteStorage {
       throw new IllegalArgumentException("Invalid storage write request!");
     }
 
-    return this.channel.write(buffer, offset);
+    synchronized (this) {
+      return this.channel.write(buffer, offset); 
+    }
   }
 
   /**
@@ -188,7 +192,7 @@ public class FileStorage implements TorrentByteStorage {
   }
 
   @Override
-  public boolean isFinished() {
+  public synchronized boolean isFinished() {
     return this.current.equals(this.target);
   }
 }

@@ -3,4 +3,19 @@
   <Match>
     <Package name="~ga\.rugal\.demo\.swagger.*" />
   </Match>
+  <Match>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE" />
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP2,EI_EXPOSE_REP" />
+  </Match>
+  <Match>
+    <Bug pattern="IS2_INCONSISTENT_SYNC" />
+  </Match>
+  <Match>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,BC_UNCONFIRMED_CAST" />
+  </Match>
+  <Match>
+    <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD,RV_RETURN_VALUE_IGNORED_BAD_PRACTICE,JLM_JSR166_UTILCONCURRENT_MONITORENTER" />
+  </Match>
 </FindBugsFilter>

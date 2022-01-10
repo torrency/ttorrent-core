@@ -19,6 +19,7 @@ package com.turn.ttorrent.common;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Locale;
 
 import lombok.Data;
 
@@ -128,7 +129,9 @@ public class Peer {
    */
   public String getShortHexPeerId() {
     return String.format("..%s",
-                         this.hexPeerId.substring(this.hexPeerId.length() - 6).toUpperCase());
+                         this.hexPeerId
+                           .substring(this.hexPeerId.length() - 6)
+                           .toUpperCase(Locale.US));
   }
 
   /**

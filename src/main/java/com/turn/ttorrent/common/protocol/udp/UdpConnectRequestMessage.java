@@ -34,7 +34,7 @@ public class UdpConnectRequestMessage extends UdpTrackerMessage.UdpTrackerReques
 
   private static final long UDP_CONNECT_REQUEST_MAGIC = 0x41727101980L;
 
-  private final long connectionId = UDP_CONNECT_REQUEST_MAGIC;
+  private static final long CONNECTION_ID = UDP_CONNECT_REQUEST_MAGIC;
 
   private final int actionId = Type.CONNECT_REQUEST.getId();
 

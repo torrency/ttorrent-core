@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import com.turn.ttorrent.client.peer.SharingPeer;
 import com.turn.ttorrent.client.storage.TorrentByteStorage;
 import com.turn.ttorrent.common.Torrent;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author mpetazzoni
  */
+@EqualsAndHashCode
 @Slf4j
 public class Piece implements Comparable<Piece> {
 

@@ -32,6 +32,7 @@ import com.turn.ttorrent.client.Piece;
 import com.turn.ttorrent.client.SharedTorrent;
 import com.turn.ttorrent.common.Peer;
 import com.turn.ttorrent.common.protocol.PeerMessage;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +63,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author mpetazzoni
  */
+@EqualsAndHashCode
 @Slf4j
 public class SharingPeer extends Peer implements MessageListener {
 
@@ -81,7 +83,7 @@ public class SharingPeer extends Peer implements MessageListener {
 
   private SharedTorrent torrent;
 
-  private BitSet availablePieces;
+  private final BitSet availablePieces;
 
   /**
    * The currently requested piece, if any.

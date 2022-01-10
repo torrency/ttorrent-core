@@ -121,8 +121,7 @@ public class HttpTrackerClient extends TrackerClient {
       throw new AnnounceException("No response or unreachable tracker!");
     }
 
-    try {
-      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
       baos.write(in);
 
       // Parse and handle the response
@@ -136,8 +135,7 @@ public class HttpTrackerClient extends TrackerClient {
                                                 mve.getMessage()),
                                   mve);
     } finally {
-      // Make sure we close everything down at the end to avoid resource
-      // leaks.
+      // Make sure we close everything down at the end to avoid resource leaks.
       try {
         in.close();
       } catch (final IOException ioe) {

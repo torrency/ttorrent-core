@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.turn.ttorrent.bcodec.BeValue;
@@ -169,7 +170,10 @@ public class TrackedPeer extends Peer {
     }
 
     if (!state.equals(this.state)) {
-      LOG.info("Peer {} {} download of {}.", this, state.name().toLowerCase(), this.torrent);
+      LOG.info("Peer {} {} download of {}.",
+               this,
+               state.name().toLowerCase(Locale.US),
+               this.torrent);
     }
 
     this.state = state;

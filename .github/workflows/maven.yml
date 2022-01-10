@@ -1,0 +1,30 @@
+name: CI & CD
+
+on:
+  push:
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
+    branches: [master]
+
+jobs:
+  # CI
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.1.0
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
+      - name: Restore Build Cache
+        uses: actions/cache@v1.1.2
+        with:
+          path: ~/.m2/repository
+          key: v1-ttorrent-${{ hashFiles('pom.xml') }}
+
+      - name: Create JAR package
+        run: mvn --no-transfer-progress test

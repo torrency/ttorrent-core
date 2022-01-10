@@ -3,7 +3,7 @@
   <parent>
     <groupId>ga.rugal</groupId>
     <artifactId>parent</artifactId>
-    <version>1.8.0</version>
+    <version>1.13.1</version>
   </parent>
   
   <artifactId>ttorrent</artifactId>
@@ -22,7 +22,7 @@
     <!-- configuration -->
     <jacoco.skip.coverage.check>true</jacoco.skip.coverage.check>
     <!-- dependency -->
-    <io.version>2.4</io.version>
+    <io.version>2.11.0</io.version>
     <simpleframework.version>4.1.21</simpleframework.version>
   </properties>
   
@@ -30,7 +30,7 @@
     <connection>scm:git:git://github.com/Rugal/ttorrent-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Rugal/ttorrent-core.git</developerConnection>
     <url>https://github.com/Rugal/ttorrent-core</url>
-    <tag>master</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>

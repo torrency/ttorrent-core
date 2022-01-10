@@ -604,7 +604,7 @@ public class Client extends Observable implements Runnable,
 
     // Actually choke all chosen peers (if any), except the eventual
     // optimistic unchoke.
-    if (choked.size() > 0) {
+    if (!choked.isEmpty()) {
       final SharingPeer randomPeer = choked.toArray(
               new SharingPeer[0])[this.random.nextInt(choked.size())];
 
@@ -621,7 +621,7 @@ public class Client extends Observable implements Runnable,
   }
 
   /**
-   * AnnounceResponseListener handler(s). *********************************
+   * AnnounceResponseListener handler(s).
    */
   /**
    * Handle an announce response event.
