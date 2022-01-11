@@ -3,9 +3,9 @@
   <parent>
     <groupId>ga.rugal</groupId>
     <artifactId>parent</artifactId>
-    <version>1.13.1</version>
+    <version>1.15.0</version>
   </parent>
-  
+
   <artifactId>ttorrent</artifactId>
   <version>1.2.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -17,7 +17,7 @@
     a tracker and a torrent manipulation utility.
     This project forks from https://github.com/mpetazzoni/ttorrent
   </description>
-  
+
   <properties>
     <!-- configuration -->
     <jacoco.skip.coverage.check>true</jacoco.skip.coverage.check>
@@ -25,13 +25,18 @@
     <io.version>2.11.0</io.version>
     <simpleframework.version>4.1.21</simpleframework.version>
   </properties>
-  
+
   <scm>
     <connection>scm:git:git://github.com/Rugal/ttorrent-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Rugal/ttorrent-core.git</developerConnection>
     <url>https://github.com/Rugal/ttorrent-core</url>
     <tag>HEAD</tag>
   </scm>
+
+  <ciManagement>
+    <system>github action</system>
+    <url>https://github.com/Rugal/ttorrent-core/actions/workflows/maven.yml</url>
+  </ciManagement>
 
   <licenses>
     <license>
@@ -43,7 +48,7 @@
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/Rugal/ttorrent-core/issues</url>
-  </issueManagement>  
+  </issueManagement>
 
   <dependencies>
     <!-- spring -->
@@ -81,7 +86,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <!-- checkstyle -->
