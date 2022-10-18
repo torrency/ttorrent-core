@@ -12,19 +12,25 @@ jobs:
   integration:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.1.0
+      - name: clone parent repository
+        uses: actions/checkout@v3
+        with:
+          repository: torrency/torrency
+          token: ${{ secrets.CLONE_TOKEN }}
+          submodules: true
 
       - name: Setup Java JDK
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v3.6.0
         with:
           java-version: 11
+          distribution: zulu
 
       - name: Restore Build Cache
-        uses: actions/cache@v1.1.2
+        uses: actions/cache@v3
         with:
+          key: v1-ttorrent-${{ hashFiles('ttorrent-core/pom.xml') }}
           path: ~/.m2/repository
-          key: v1-ttorrent-${{ hashFiles('pom.xml') }}
 
-      - name: Create JAR package
+      - name: Unit Test
         run: mvn --no-transfer-progress test
+        working-directory: ttorrent-core
