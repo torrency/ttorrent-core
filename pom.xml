@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ga.rugal</groupId>
-    <artifactId>torrency-parent</artifactId>
+    <groupId>ga.rugal.torrency</groupId>
+    <artifactId>parent</artifactId>
     <version>1.0.0</version>
   </parent>
 
